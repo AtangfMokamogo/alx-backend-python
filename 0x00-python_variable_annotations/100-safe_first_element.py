@@ -10,7 +10,7 @@ def safe_first_element(lst: Sequence[Any]) -> Union[Any, None]:
         lst (list): The input list of unknown element types.
 
     Returns:
-        Union[None, object]: The first element of the list if it exists, otherwise returns None.
+        Union[None, object]: first element of the list if exists, else None
     """
     if lst:
         return lst[0]
