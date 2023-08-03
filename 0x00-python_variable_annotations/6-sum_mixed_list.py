@@ -2,10 +2,10 @@
 """ This is an implementation of basic type annotations in Python """
 
 
-from typing import List
+from typing import List, Union
 
 
-def sum_mixed_list(mxd_lst: List[float]) -> float:
+def sum_mixed_list(mxd_lst: List[Union[int, float]]) -> float:
     """ this function calculate the sum of a list of integers and floats
 
     Args:
@@ -14,4 +14,4 @@ def sum_mixed_list(mxd_lst: List[float]) -> float:
     Returns:
         float: The sum of mxd_lst
     """
-    return sum(mxd_lst)
+    return float(sum(mxd_lst))
