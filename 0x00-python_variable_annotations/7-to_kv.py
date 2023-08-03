@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """ This is an implementation of basic type annotations in Python """
-from typing import  Union, List, Tuple
+from typing import Union, List, Tuple
 
 
 def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
