@@ -3,8 +3,8 @@
 from typing import TypeVar, Dict, Union
 
 
-k = TypeVar('k')  # Generic type for the key
-v = TypeVar('v')  # Generic type for the value
+k = TypeVar('k')
+v = TypeVar('v')
 
 
 def safely_get_value(dct: Dict[k, v], key: k,
