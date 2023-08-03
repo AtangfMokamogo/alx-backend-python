@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
 """ This is an implementation of basic type annotations in Python """
-from typing import TypeVar, Dict, Union
+from typing import TypeVar, Mapping, Any, Union
+
+T = TypeVar('T')
 
 
-k = TypeVar('k')
-v = TypeVar('v')
-
-
-def safely_get_value(dct: Dict[k, v], key: k,
-                     default: v = None) -> Union[v, None]:
+def safely_get_value(dct: Mapping, key: Any,
+                     default: Union[T, None] = None) -> Union[Any, T]:
     """ This function safely retrieves a value from a dictionary.
 
     Parameters:
-        dct (Dict[k, v]): The input dictionary.
-        key (k): The key to retrieve the value.
-        default (v, optional): default value to return if the key is not found
+        dct (Mapping[Any, T]): The input dictionary.
+        key (Any): The key to retrieve the value.
+        default (Union[T, None], optional): default value to return
 
     Returns:
-        Union[v, None]: value corresponding to the key if found else default
+        Union[T, None]: value corresponding to the key if found else default
     """
     if key in dct:
         return dct[key]
