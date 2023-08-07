@@ -13,7 +13,7 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
         max_delay (int): delay in floats
 
     Returns:
-        List[float]: list if wait times for coroutines
+        List[float]: list if wait times for
     """
-    delay_times = await asyncio.gather(*(delay_wait(n, max_delay) for _ in range(n)))
-    return sorted(delay_times)
+    wait = await asyncio.gather(*(delay_wait(n, max_delay) for _ in range(n)))
+    return sorted(wait)
