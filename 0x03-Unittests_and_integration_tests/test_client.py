@@ -142,7 +142,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         mock_reponse.mock_get_json = mock_reponse.get_json_patcher.start()
         mock_reponse.mock_get_json.side_effect = get_json_payload
 
-    def test_public_repos_with_license(self):
+    def test_public_repos_with_license(self)-> None:
         """testing repos with a license
         """
         client = GithubOrgClient("google")
