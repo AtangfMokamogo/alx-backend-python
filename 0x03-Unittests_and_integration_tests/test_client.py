@@ -60,7 +60,13 @@ class TestGithubOrgClient(unittest.TestCase):
 
     @patch("client.get_json")
     @patch("client.GithubOrgClient._public_repos_url", new_callable=PropertyMock)
-    def test_public_repos(self, mock_repos_url, mock_get_json):
+    def test_public_repos(self, mock_repos_url: str, mock_get_json:str):
+        """Mocks class properties
+
+        Args:
+            mock_repos_url (str): mock url
+            mock_get_json (str): mock JSON response
+        """
         # Set up the mock data and return values
         mock_repos_url.return_value = "https://api.github.com/holberton/repos"
         mock_get_json.return_value = [
@@ -88,7 +94,13 @@ class TestGithubOrgClient(unittest.TestCase):
             repo: Dict,
             key: str,
             expected_result: bool) -> None:
-        """Tests the `has_license` method."""
+        """mocks class properties
+
+        Args:
+            repo (Dict): mock JSON response
+            key (str): mock json key
+            expected_result (bool): mock results
+        """
         client = GithubOrgClient("google")
         mocked_callable = client.has_license(repo, key)
         self.assertEqual(mocked_callable, expected_result)
