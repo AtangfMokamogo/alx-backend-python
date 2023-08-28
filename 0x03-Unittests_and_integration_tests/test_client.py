@@ -76,8 +76,8 @@ class TestGithubOrgClient(unittest.TestCase):
         ]
 
         # Create an instance of the class and collect resources for test
-        org_client = GithubOrgClient("holberton")
-        repos = org_client.public_repos(license="MIT")
+        client = GithubOrgClient("holberton")
+        repos = client.public_repos(license="MIT")
 
         # Assert the results and one time calls to callbles and properties
         expected_repos = ["alx-backend_python"]
@@ -141,6 +141,13 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         mock_reponse.get_json_patcher = patch('client.get_json')
         mock_reponse.mock_get_json = mock_reponse.get_json_patcher.start()
         mock_reponse.mock_get_json.side_effect = get_json_payload
+
+    def test_public_repos_with_license(self):
+        """testing repos with a license
+        """
+        client = GithubOrgClient("google")
+        repos_with_license = client.public_repos(license="apache-2.0")
+        self.assertEqual(repos_with_license, self.apache2_repos)
 
     @classmethod
     def tearDownClass(mock_reponse):
