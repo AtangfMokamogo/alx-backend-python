@@ -2,9 +2,10 @@
 """ Unit Testing In Python """
 import unittest
 from unittest.mock import patch, MagicMock, PropertyMock
-from parameterized import parameterized
-from typing import Dict
+from parameterized import parameterized, parameterized_class
+from typing import Dict, Callable
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -56,6 +57,84 @@ class TestGithubOrgClient(unittest.TestCase):
         result = client._public_repos_url
 
         self.assertEqual(result, mock_url["repos_url"])
+
+    @patch("client.get_json")
+    @patch("client.GithubOrgClient._public_repos_url", new_callable=PropertyMock)
+    def test_public_repos(self, mock_repos_url, mock_get_json):
+        # Set up the mock data and return values
+        mock_repos_url.return_value = "https://api.github.com/holberton/repos"
+        mock_get_json.return_value = [
+            {"name": "alx-backend_python", "license": {"key": "MIT"}},
+            {"name": "alx-backend_javascript", "license": {"key": "Apache"}},
+            {"name": "alx-backend", "license": None},
+        ]
+
+        # Create an instance of the class and collect resources for test
+        org_client = GithubOrgClient("holberton")
+        repos = org_client.public_repos(license="MIT")
+
+        # Assert the results and one time calls to callbles and properties
+        expected_repos = ["alx-backend_python"]
+        self.assertEqual(repos, expected_repos)
+        mock_repos_url.assert_called_once()
+        mock_get_json.assert_called_once()
+
+    @parameterized.expand([
+        ({'license': {'key': "my_license"}}, "my_license", True),
+        ({'license': {'key': "other_license"}}, "my_license", False),
+    ])
+    def test_has_license(
+            self,
+            repo: Dict,
+            key: str,
+            expected_result: bool) -> None:
+        """Tests the `has_license` method."""
+        client = GithubOrgClient("google")
+        mocked_callable = client.has_license(repo, key)
+        self.assertEqual(mocked_callable, expected_result)
+
+
+@parameterized_class([
+    {
+        'org_payload': TEST_PAYLOAD[0][0],
+        'repos_payload': TEST_PAYLOAD[0][1],
+        'expected_repos': TEST_PAYLOAD[0][2],
+        'apache2_repos': TEST_PAYLOAD[0][3],
+    },
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """ Intergration Testing in Python """
+
+    @classmethod
+    def setUpClass(mock_reponse: Callable):
+        """This set up the resorces needed for testing """
+        mock_reponse.route_payload = {
+            'https://api.github.com/orgs/google': mock_reponse.org_payload,
+            'https://api.github.com/orgs/google/repos': mock_reponse.repos_payload,
+        }
+
+        def get_json_payload(url: str) -> str:
+            """Parses the mock response to JSON
+
+            Args:
+                url (str): the url to mock
+
+            Returns:
+                str: JSON Response
+            """
+            if url in mock_reponse.route_payload:
+                return mock_reponse.route_payload[url]
+            return None
+
+        mock_reponse.get_json_patcher = patch('client.get_json')
+        mock_reponse.mock_get_json = mock_reponse.get_json_patcher.start()
+        mock_reponse.mock_get_json.side_effect = get_json_payload
+
+    @classmethod
+    def tearDownClass(mock_reponse):
+        """ Cleans up resources"""
+        mock_reponse.get_json_patcher.stop()
+
 
 if __name__ == '__main__':
     unittest.main()
